@@ -1,15 +1,32 @@
-"""Initialize app."""
+"""Initialize Flask app."""
 from flask import Flask
+from flask_assets import Environment
+from ddtrace import patch_all
 
 
-def create_app():
-    """Construct the core flask_wtforms_tutorial."""
+patch_all()
+
+
+def init_app():
+    """Create Flask application."""
     app = Flask(__name__, instance_relative_config=False)
     app.config.from_object("config.Config")
-    app.config["RECAPTCHA_PUBLIC_KEY"] = "iubhiukfgjbkhfvgkdfm"
-    app.config["RECAPTCHA_PARAMETERS"] = {"size": "100%"}
+    assets = Environment()
+    assets.init_app(app)
 
     with app.app_context():
-        # Import parts of our flask_wtforms_tutorial
+        # Import parts of our application
+        from .assets import compile_static_assets
+        from .home import home
+        from .products import products
+        from .profile import profile
+
+        # Register Blueprints
+        app.register_blueprint(profile.profile_bp)
+        app.register_blueprint(home.home_bp)
+        app.register_blueprint(products.product_bp)
+
+        # Compile static assets
+        compile_static_assets(assets)
 
         return app

@@ -1,7 +1,7 @@
 """Application entry point."""
-from flask_wtforms_tutorial import create_app
+from flask_blueprint_tutorial import init_app
 
-app = create_app()
+app = init_app()
 
 if __name__ == "__main__":
-    app.run(host="0.0.0.0", debug=True)
+    app.run(host="0.0.0.0")
